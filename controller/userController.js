@@ -4,11 +4,11 @@ const User = require("../db/db")
 
 const Register = async (req, res) =>{
     try{
-        const Email = await User.findOne({email:req.body})
+        const Email = await User.findOne({email:req.body.email})
         if(Email){
             res.status(401).json({msg:"email already exist"})
         }else{
-            const {password} = req.body;
+            const password = req.body.password;
             const rewrite = await bcrypt.genSalt(10)
             const change = await bcrypt.hash(password,rewrite)
             const Users = await User.create({
@@ -37,7 +37,7 @@ const SignIn = async (req, res) =>{
                 const token = jwt.sign({
                     name:chechEmail.name,
                     email:chechEmail.email
-                })
+                },"dvbuuefbeiodsei",{expires:"3d"})
                 res.status(200).json({msg:`welcome Back ${checkPassword.name}`, data:{...info,token}})
            }else{
                res.status(401).json({msg:"incorrect password"})
